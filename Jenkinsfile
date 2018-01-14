@@ -136,13 +136,13 @@ node('maven') {
     
     input "Switch Production?"
     if (activeSvc == "nationalparks-blue"){
-        sh "oc label service $targetSvc type=parksmap-backend -n $prodProjectName"
+        sh "oc label service $targetSvc type=parksmap-backend -n $prodProjectName --overwrite=true"
         sh "oc label service $activeSvc type- -n $prodProjectName"
         sh "oc patch route/nationalparks-bluegreen -p \'{\"spec\":{\"to\":{\"name\":\"nationalparks-green\"}}}\' -n $prodProjectName"
     }
     else{
-        sh "oc label service $targetSvc type=parksmap-backend -n prod"
-        sh "oc label service $activeSvc type- -n prod"
+        sh "oc label service $targetSvc type=parksmap-backend -n $prodProjectName --overwrite=true"
+        sh "oc label service $activeSvc type- -n $prodProjectName"
         sh "oc patch route/nationalparks-bluegreen -p \'{\"spec\":{\"to\":{\"name\":\"nationalparks-blue\"}}}\' -n $prodProjectName"
     }
     
