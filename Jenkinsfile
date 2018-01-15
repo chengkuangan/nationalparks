@@ -103,7 +103,7 @@ node('maven') {
   // Blue/Green Deployment into Production
   stage('Deploy new Version') {
     
-    String count = sh script: 'oc get route nationalparks-bluegreen -n $prodProjectName | grep nationalparks-green  | wc -l | tr -d \"\n\"', returnStdout: true
+    String count = sh script: "oc get route nationalparks-bluegreen -n $prodProjectName | grep nationalparks-green  | wc -l | tr -d \"\n\"", returnStdout: true
     // echo "count = '$count'"
     
     
