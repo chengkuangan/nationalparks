@@ -57,7 +57,7 @@ node('maven') {
     sh "oc project $devProjectName && oc patch bc nationalparks --patch '{\"spec\":{\"output\": {\"to\": {\"kind\": \"ImageStreamTag\", \"name\":\"$devImageName\"}}}}' -n $devProjectName"
     sh "mkdir ./deployments"
     sh "oc project $devProjectName && curl -o ./deployments/nationalparks.jar http://nexus3:8081/repository/releases/${packageName}"
-    sh "oc start-build nationalparks --from-dir=. -n $devProjectName --wait=true"
+    sh "oc start-build nationalparks --from-file=./deployments/nationalparks.jar -n $devProjectName --wait=true"
     
     // need to explicitly rollout because there is no ConfigChange trigger enabled
     //--sh "oc rollout latest dc/nationalparks -n dev"
