@@ -11,9 +11,9 @@ node('maven') {
   def nexusReleaseURL = "http://nexus3:8081/repository/releases"
   def activeSvc = ""
   def targetSvc = ''
-  def devProjectName = 'dev'
-  def prodProjectName = 'prod'
-  def testProjectName = 'test'
+  def devProjectName = "dev"
+  def prodProjectName = "prod"
+  def testProjectName = "test"
   def devImageNameN = "dev"     // image namespace
   def testImageNameN = "dev"    // image namespace
   def prodImageNameN = "dev"    // image namespace
