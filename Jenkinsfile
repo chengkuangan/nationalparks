@@ -38,14 +38,9 @@ node('maven') {
     sh "${mvnCmd} package -DskipTests=true"
   }
 
-  stage('Unit Tests') {
-    // TBD
-    //-- sh "${mvnCmd} test"
-  }
-
   stage('Code Analysis') {
     // TBD
-    sh "${mvnCmd} jacoco:report sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -DskipTests=true"
+    // sh "${mvnCmd} jacoco:report sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -DskipTests=true"
   }
 
   stage('Publish jar to Nexus') {
