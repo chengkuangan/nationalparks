@@ -51,7 +51,8 @@ node('maven') {
     // https://support.sonatype.com/hc/en-us/articles/360010223594-maven-deploy-plugin-version-3-0-0-M1-deploy-fails-with-401-ReasonPhrase-Unauthorized
     // sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::${nexusReleaseURL}"
     
-    sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::${nexusReleaseURL}"
+    sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::${nexusReleaseURL}"
+    
     echo "Generated jar file: ${packageName}"
   }
 
