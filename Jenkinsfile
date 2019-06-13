@@ -60,12 +60,6 @@ node('maven') {
     sh "oc project $devProjectName && curl -o ./deployments/nationalparks.jar http://nexus3:8081/repository/releases/${packageName}"
     sh "oc start-build nationalparks --from-file=./deployments/nationalparks.jar -n $devProjectName --wait=true"
     
-    // need to explicitly rollout because there is no ConfigChange trigger enabled
-    //--sh "oc rollout latest dc/nationalparks -n dev"
-    
-    openshiftVerifyBuild("namespace": "$devProjectName", "buildConfig": "nationalparks")
-    openshiftVerifyService("namespace": "$devProjectName", "serviceName": "nationalparks")
-    
     verifyNationalparksDB("http://nationalparks-devProjectName$wildcardDNS/ws/data/all/")
     
   }
@@ -76,24 +70,7 @@ node('maven') {
     echo "Tag TestReady Image Stream... which will trigger Test Deployment."
     sh "oc project $devProjectName && oc tag $devImageNameN/$devImageName $testImageNameN/$testImageName"
     
-    // need to explicitly rollout because there is no ConfigChange trigger enabled
-    //-- sh "oc rollout latest dc/nationalparks -n $testProjectName"
-    
-    openshiftVerifyDeployment("namespace": "$testProjectName", "deploymentConfig": "nationalparks", "replicaCount": 1, "verifyReplicaCount": 1, "waitTime": 240000)
-    openshiftVerifyService("namespace": "$testProjectName", "serviceName": "nationalparks")
-    
     verifyNationalparksDB('http://nationalparks-testProjectName$wildcardDNS/ws/data/all/')
-  }
-
-  stage('Integration Test') {
-    // TBD
-    
-    //def count = sh script: 'curl -v --silent http://nationalparks-dev.ocp.demo.com/ws/data/all/ 2>&1 | grep -Eoi "Hwange National Park Airport" | wc -l', returnStatus: true
-    
-    //if (count == 0) {
-    //    
-    // }
-    
   }
 
   // Blue/Green Deployment into Production
@@ -117,12 +94,6 @@ node('maven') {
     sh "oc project $prodProjectName && oc patch dc $targetSvc --patch '{\"spec\": { \"triggers\": [ { \"type\": \"ImageChange\", \"imageChangeParams\": { \"automatic\": true, \"containerNames\": [ \"$targetSvc\" ], \"from\": { \"kind\": \"ImageStreamTag\", \"namespace\": \"$prodImageNameN\", \"name\": \"$prodImageName\"}}}]}}' -n $prodProjectName"
     sh "oc project $prodProjectName && oc tag $testImageNameN/$testImageName $prodImageNameN/$prodImageName"
     
-    // need to explicitly call rollout command because the image trigger will not be activated since we keep changing the image trigger attributes without specifying ConfigChange trigger in the very first place, thus any changes to trigger will not be captured.
-    // Not very stable, all new projects seems working fine by image trigger.
-    //--sh "oc rollout latest dc/$targetSvc -n $prodProjectName"
-    
-    openshiftVerifyDeployment("namespace": "$prodProjectName", "deploymentConfig": "$targetSvc", "replicaCount": 1, "verifyReplicaCount": 1, "waitTime": 240000)
-    openshiftVerifyService("namespace": "$prodProjectName", "serviceName": "$targetSvc")
     verifyNationalparksDB("http://$targetSvc:8080/ws/data/all/")
     
   }
