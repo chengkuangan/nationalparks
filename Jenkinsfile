@@ -11,12 +11,13 @@ node('maven') {
   def nexusReleaseURL = "http://nexus3:8081/repository/releases"
   def activeSvc = ""
   def targetSvc = ''
-  def devProjectName = "dev"
-  def prodProjectName = "prod"
-  def testProjectName = "test"
-  def devImageNameN = "dev"     // image namespace
-  def testImageNameN = "dev"    // image namespace
-  def prodImageNameN = "dev"    // image namespace
+  def projectNamePrefix = ""
+  def devProjectName = "${projectNamePrefix}dev"
+  def prodProjectName = "${projectNamePrefix}prod"
+  def testProjectName = "${projectNamePrefix}test"
+  def devImageNameN = "${projectNamePrefix}dev"     // image namespace
+  def testImageNameN = "${projectNamePrefix}dev"    // image namespace
+  def prodImageNameN = "${projectNamePrefix}dev"    // image namespace
   def wildcardDNS = ".ocp.demo.com"
   
   
