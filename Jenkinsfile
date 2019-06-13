@@ -46,7 +46,12 @@ node('maven') {
 
   stage('Publish jar to Nexus') {
     echo "Publish jar file to Nexus..."
-    sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::${nexusReleaseURL}"
+    // Remove the ::default from altDeploymentRepository due to the bugs reported at 
+    // https://issues.apache.org/jira/browse/MDEPLOY-244?focusedCommentId=16648217&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-16648217
+    // https://support.sonatype.com/hc/en-us/articles/360010223594-maven-deploy-plugin-version-3-0-0-M1-deploy-fails-with-401-ReasonPhrase-Unauthorized
+    // sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::${nexusReleaseURL}"
+    
+    sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::${nexusReleaseURL}"
     echo "Generated jar file: ${packageName}"
   }
 
